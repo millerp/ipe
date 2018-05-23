@@ -10,7 +10,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/dimiro1/ipe/utils"
+	"github.com/millerp/ipe/utils"
 	log "github.com/golang/glog"
 )
 

@@ -48,17 +48,18 @@ func Start(filename string) {
 	r := chi.NewRouter()
 	r.Use(middleware.Recoverer)
 
-	r.Get("/app/:key", (&websocketHandler{db}).ServeHTTP)
+	r.Get("/app/{key}", (&websocketHandler{db}).ServeHTTP)
 	r.Group(func(r chi.Router) {
 		r.Use(checkAppDisabled(db))
 		r.Use(authenticationHandler(db))
 
-		r.Post("/apps/:app_id/events", (&postEventsHandler{db}).ServeHTTP)
-		r.Get("/apps/:app_id/channels", (&getChannelsHandler{db}).ServeHTTP)
-		r.Get("/apps/:app_id/channels/:channel_name", (&getChannelHandler{db}).ServeHTTP)
-		r.Get("/apps/:app_id/channels/:channel_name/users", (&getChannelUsersHandler{db}).ServeHTTP)
+		r.Post("/apps/{app_id}/events", (&postEventsHandler{db}).ServeHTTP)
+		r.Get("/apps/{app_id}/channels", (&getChannelsHandler{db}).ServeHTTP)
+		r.Get("/apps/{app_id}/channels/:channel_name", (&getChannelHandler{db}).ServeHTTP)
+		r.Get("/apps/{app_id}/channels/:channel_name/users", (&getChannelUsersHandler{db}).ServeHTTP)
 	})
 
+	// Not working
 	if conf.Profiling {
 		r.Mount("/debug", middleware.Profiler())
 	}
@@ -69,7 +70,7 @@ func Start(filename string) {
 			log.Fatal(http.ListenAndServeTLS(conf.SSLHost, conf.SSLCertFile, conf.SSLKeyFile, r))
 		}()
 	}
-
+	log.Infoln(r.Routes())
 	log.Infof("Starting HTTP service on %s ...", conf.Host)
 	log.Fatal(http.ListenAndServe(conf.Host, r))
 }

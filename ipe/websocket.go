@@ -16,7 +16,7 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/pressly/chi"
 
-	"github.com/dimiro1/ipe/utils"
+	"github.com/millerp/ipe/utils"
 )
 
 var upgrader = websocket.Upgrader{
@@ -247,6 +247,9 @@ type websocketHandler struct {
 
 // Websocket GET /app/{key}
 func (h *websocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+
+	log.Info("ServeHTTP")
+
 	conn, err := upgrader.Upgrade(w, r, nil)
 	defer func() {
 		if conn != nil {
