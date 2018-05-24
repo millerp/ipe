@@ -109,6 +109,7 @@ func (c *channel) Subscribe(a *app, conn *connection, channelData string) error 
 
 	// Publish pusher_internal:member_added
 	c.PublishMemberAddedEvent(a, channelData, subscription)
+
 	// WebHook
 	a.TriggerMemberAddedHook(c, subscription)
 

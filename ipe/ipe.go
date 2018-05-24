@@ -48,6 +48,9 @@ func Start(filename string) {
 	r := chi.NewRouter()
 	r.Use(middleware.Recoverer)
 
+	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("welcome"))
+	})
 	r.Get("/app/{key}", (&websocketHandler{db}).ServeHTTP)
 	r.Group(func(r chi.Router) {
 		r.Use(checkAppDisabled(db))
