@@ -76,6 +76,11 @@ func (c *channel) Subscribe(a *app, conn *connection, channelData string) error 
 
 	if !c.IsPresence() {
 		conn.Publish(newSubscriptionSucceededEvent(c.ChannelID, "{}"))
+
+		if c.TotalSubscriptions() == 1 {
+			a.TriggerChannelOccupiedHook(c)
+		}
+
 		return nil
 	}
 	// User Info Data

@@ -142,7 +142,7 @@ func triggerHook(ctx context.Context, a *app, event hookEvent) error {
 	}
 
 	var done chan bool
-	defer close(done)
+	//defer close(done)
 
 	go func() {
 		log.Infof("Triggering %s event", event.Name)
@@ -194,11 +194,6 @@ func triggerHook(ctx context.Context, a *app, event hookEvent) error {
 		// Successfully terminated
 		done <- true
 	}()
-
-	select {
-	case <-ctx.Done():
-		return ctx.Err()
-	case <-done:
-		return nil
-	}
+	ctx.Done()
+	return nil
 }
