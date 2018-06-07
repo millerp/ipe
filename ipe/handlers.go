@@ -158,7 +158,14 @@ func (h *postEventsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, c := range input.Channels {
-		channel := app.FindOrCreateChannelByChannelID(c)
+		channel, err := app.FindChannelByChannelID(c)
+
+		if err != nil {
+			w.Header().Set("Content-Type", "application/json;charset=UTF-8")
+			w.WriteHeader(http.StatusNotFound)
+			w.Write([]byte("{\" error\": \"" + err.Error() + "\"}"))
+			return
+		}
 
 		app.Publish(channel, rawEvent{Event: input.Name, Channel: c, Data: input.Data}, input.SocketID)
 	}
