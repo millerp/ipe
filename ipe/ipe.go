@@ -58,8 +58,8 @@ func Start(filename string) {
 
 		r.Post("/apps/{app_id}/events", (&postEventsHandler{db}).ServeHTTP)
 		r.Get("/apps/{app_id}/channels", (&getChannelsHandler{db}).ServeHTTP)
-		r.Get("/apps/{app_id}/channels/:channel_name", (&getChannelHandler{db}).ServeHTTP)
-		r.Get("/apps/{app_id}/channels/:channel_name/users", (&getChannelUsersHandler{db}).ServeHTTP)
+		r.Get("/apps/{app_id}/channels/{channel_name}", (&getChannelHandler{db}).ServeHTTP)
+		r.Get("/apps/{app_id}/channels/{channel_name}/users", (&getChannelUsersHandler{db}).ServeHTTP)
 	})
 
 	// Not working
