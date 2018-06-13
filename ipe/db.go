@@ -5,8 +5,10 @@
 package ipe
 
 import (
-	"errors"
 	"sync"
+	"github.com/globalsign/mgo/bson"
+	"errors"
+	"log"
 )
 
 // db represents a app database
@@ -24,11 +26,21 @@ type memdb struct {
 }
 
 func newMemdb() db {
+	mongoDBAppCollection = mongoDBDefaultDatabase.C("apps")
 	return &memdb{}
 }
 
 func (db *memdb) AddApp(a *app) error {
 	db.Lock()
+	count, err := mongoDBAppCollection.Find(bson.M{"appid": a.AppID}).Count()
+	if err != nil {
+		log.Println(err)
+	}
+
+	if count <= 0 {
+		mongoDBAppCollection.Insert(a)
+	}
+
 	db.Apps = append(db.Apps, a)
 	db.Unlock()
 	return nil
@@ -42,6 +54,13 @@ func (db *memdb) GetAppByAppID(appID string) (*app, error) {
 		}
 	}
 	return nil, errors.New("App not found")
+
+	result := new(app)
+	err := mongoDBAppCollection.Find(bson.M{"appid": appID}).One(&result)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
 }
 
 // GetAppByKey returns an App with by key
@@ -51,5 +70,13 @@ func (db *memdb) GetAppByKey(key string) (*app, error) {
 			return a, nil
 		}
 	}
+
 	return nil, errors.New("App not found")
+
+	result := new(app)
+	err := mongoDBAppCollection.Find(bson.M{"key": key}).One(&result)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
 }

@@ -10,13 +10,14 @@ import (
 	"fmt"
 	"sync"
 
-	log "github.com/golang/glog"
+	"github.com/golang/glog"
+	"github.com/globalsign/mgo/bson"
 )
 
 // An App
 type app struct {
 	sync.Mutex
-
+	Id                  bson.ObjectId `json:"id" bson:"_id,omitempty"`
 	Name                string
 	AppID               string
 	Key                 string
@@ -95,12 +96,12 @@ func (a *app) PublicChannels() []*channel {
 
 // Disconnect Socket
 func (a *app) Disconnect(socketID string) {
-	log.Infof("Disconnecting socket %+v", socketID)
+	glog.Infof("Disconnecting socket %+v", socketID)
 
 	conn, err := a.FindConnection(socketID)
 
 	if err != nil {
-		log.Infof("Socket not found, %+v", err)
+		glog.Infof("Socket not found, %+v", err)
 		return
 	}
 
@@ -128,13 +129,14 @@ func (a *app) Disconnect(socketID string) {
 
 // Connect a new Subscriber
 func (a *app) Connect(conn *connection) {
-	log.Infof("Adding a new Connection %s to app %s", conn.SocketID, a.Name)
+	glog.Infof("Adding a new Connection %s to app %s", conn.SocketID, a.Name)
 	a.Lock()
 	defer a.Unlock()
 
 	a.Connections[conn.SocketID] = conn
 
 	a.Stats.Add("TotalConnections", 1)
+	glog.Infoln(a)
 }
 
 // Find a Connection on this app
@@ -150,7 +152,7 @@ func (a *app) FindConnection(socketID string) (*connection, error) {
 
 // DeleteChannel removes the channel from app
 func (a *app) RemoveChannel(c *channel) {
-	log.Infof("Remove the channel %s from app %s", c.ChannelID, a.Name)
+	glog.Infof("Remove the channel %s from app %s", c.ChannelID, a.Name)
 	a.Lock()
 	defer a.Unlock()
 
@@ -173,7 +175,7 @@ func (a *app) RemoveChannel(c *channel) {
 
 // Add a new Channel to this APP
 func (a *app) AddChannel(c *channel) {
-	log.Infof("Adding a new channel %s to app %s", c.ChannelID, a.Name)
+	glog.Infof("Adding a new channel %s to app %s", c.ChannelID, a.Name)
 
 	a.Lock()
 	defer a.Unlock()

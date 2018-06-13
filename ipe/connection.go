@@ -7,7 +7,7 @@ package ipe
 import (
 	"time"
 
-	log "github.com/golang/glog"
+	"github.com/golang/glog"
 )
 
 // socket interface to write to the client
@@ -24,7 +24,9 @@ type connection struct {
 
 // Create a new Subscriber
 func newConnection(socketID string, s socket) *connection {
-	log.Infof("Creating a new Subscriber %+v", socketID)
+	glog.Infof("Creating a new Subscriber %+v", socketID)
+
+	glog.Infoln(s)
 
 	return &connection{SocketID: socketID, Socket: s, CreatedAt: time.Now()}
 }

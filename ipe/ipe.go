@@ -37,6 +37,8 @@ func Start(filename string) {
 		return
 	}
 
+	StartMongoDBInstance(conf.MongoHost, conf.MongoDatabase)
+
 	// Using a in memory database
 	db := newMemdb()
 
