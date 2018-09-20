@@ -214,9 +214,11 @@ func (a *app) FindChannelByChannelID(n string) (*channel, error) {
 
 	if exists {
 		return c, nil
+	} else {
+		c = newChannel(n)
 	}
 
-	return nil, errors.New("Channel does not exists")
+	return c, nil
 }
 
 func (a *app) Publish(c *channel, event rawEvent, ignore string) error {
