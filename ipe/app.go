@@ -216,6 +216,7 @@ func (a *app) FindChannelByChannelID(n string) (*channel, error) {
 		return c, nil
 	} else {
 		c = newChannel(n)
+		a.Channels[n] = c
 		log.Infof("Channel Created: %s", n)
 	}
 
